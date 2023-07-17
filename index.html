@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registro de gastos_y_depositos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f39f;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .form-container {
+      width: 400px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin: 0 10px 20px;
+      animation: fade-in 0.5s ease-out;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input[type="date"],
+    input[type="number"],
+    input[type="text"],
+    select {
+      padding: 5px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button[type="submit"] {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .delete-button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+
+    .delete-button:hover {
+      background-color: #d32f2f;
+    }
+
+    #efectivo {
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+      background-color: #e0e0e0;
+      padding: 10px;
+      border-radius: 4px;
+      animation: slide-in-bottom 0.5s ease-out;
+    }
+
+    #gasto-zona-container, #gasto-total-container {
+      width: 100%;
+    }
+
+    #gasto-zona-button, #gasto-total-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    #gasto-zona-results, #gasto-total-result {
+      margin-top: 10px;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slide-in-bottom {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Registro de Gastos y Depositos</h2>
+
+  <div class="container">
+    <div class="form-container">
+      <form id="efectivo-form">
+        <label for="efectivo-input">Efectivo Disponible:</label>
+        <input type="number" id="efectivo-input" step="0.01" required>
+        <button type="submit">Guardar</button>
+      </form>
+    </div>
+    
+    <div class="form-container">
+      <form id="gasto-form">
+        <h3>Registrar Gasto</h3>
+        <input type="hidden" id="fecha-gasto" value="">
+        <label for="gasto">Gasto:</label>
+        <input type="number" id="gasto" step="0.01" required>
+        <label for="concepto-gasto">Concepto:</label>
+        <input type="text" id="concepto-gasto" required>
+        <label for="zona-gasto">Zona:</label>
+        <select id="zona-gasto" required>
+          <option value="">Seleccionar Zona</option>
+          <option value="Zona Metropolitana">Zona Metropolitana</option>
+          <option value="Centro Este">Centro Este</option>
+          <option value="Centro Oeste">Centro Oeste</option>
+        </select>
+        <button type="submit">Agregar Gasto</button>
+      </form>
+    </div>
+
+    <div class="form-container">
+      <form id="deposito-form">
+        <h3>Registrar Deposito</h3>
+        <input type="hidden" id="fecha-deposito" value="">
+        <label for="deposito">Deposito:</label>
+        <input type="number" id="deposito" step="0.01" required>
+        <label for="concepto-deposito">Concepto:</label>
+        <input type="text" id="concepto-deposito" required>
+        <label for="zona-deposito">Zona:</label>
+        <select id="zona-deposito" required>
+          <option value="">Seleccionar Zona</option>
+          <option value="Zona Metropolitana">Zona Metropolitana</option>
+          <option value="Centro Este">Centro Este</option>
+          <option value="Centro Oeste">Centro Oeste</option>
+        </select>
+        <button type="submit">Agregar Deposito</button>
+      </form>
+    </div>
+
+    <div id="gasto-zona-container">
+      <h3>Gasto Total por Zona</h3>
+      <button id="gasto-zona-button">Calcular</button>
+      <div id="gasto-zona-results"></div>
+    </div>
+
+    <div id="gasto-total-container">
+      <h3>Gasto Total</h3>
+      <button id="gasto-total-button">Calcular</button>
+      <div id="gasto-total-result"></div>
+    </div>
+  </div>
+
+  <div id="efectivo">Efectivo Disponible: $<span id="efectivo-valor">0</span></div>
+
+  <table id="registro-table">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Fecha</th>
+        <th>Monto</th>
+        <th>Concepto</th>
+        <th>Zona</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="registro-body">
+    </tbody>
+  </table>
+
+  <script>
+    let efectivo = 0;
+    let registros = [];
+
+    const efectivoForm = document.getElementById('efectivo-form');
+    const efectivoInput = document.getElementById('efectivo-input');
+    const gastoForm = document.getElementById('gasto-form');
+    const fechaGastoInput = document.getElementById('fecha-gasto');
+    const gastoInput = document.getElementById('gasto');
+    const conceptoGastoInput = document.getElementById('concepto-gasto');
+    const zonaGastoInput = document.getElementById('zona-gasto');
+    const depositoForm = document.getElementById('deposito-form');
+    const fechaDepositoInput = document.getElementById('fecha-deposito');
+    const depositoInput = document.getElementById('deposito');
+    const conceptoDepositoInput = document.getElementById('concepto-deposito');
+    const zonaDepositoInput = document.getElementById('zona-deposito');
+    const efectivoValor = document.getElementById('efectivo-valor');
+    const registroBody = document.getElementById('registro-body');
+    const gastoZonaButton = document.getElementById('gasto-zona-button');
+    const gastoZonaResults = document.getElementById('gasto-zona-results');
+    const gastoTotalButton = document.getElementById('gasto-total-button');
+    const gastoTotalResult = document.getElementById('gasto-total-result');
+
+    cargarRegistrosAlmacenados();
+
+    efectivoForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      efectivo = parseFloat(efectivoInput.value);
+      efectivoValor.textContent = efectivo.toFixed(2);
+      efectivoInput.value = '';
+      guardarRegistrosEnAlmacenamientoLocal();
+      actualizarTabla();
+    });
+
+    gastoForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fecha = obtenerFechaActual();
+      const monto = parseFloat(gastoInput.value);
+      const concepto = conceptoGastoInput.value;
+      const zona = zonaGastoInput.value;
+
+      if (monto > efectivo) {
+        alert("No hay suficiente efectivo disponible.");
+        return;
+      }
+
+      efectivo -= monto;
+      efectivoValor.textContent = efectivo.toFixed(2);
+
+      const registro = {
+        tipo: 'Gasto',
+        fecha,
+        monto,
+        concepto,
+        zona
+      };
+
+      registros.push(registro);
+
+      gastoInput.value = '';
+      conceptoGastoInput.value = '';
+      zonaGastoInput.value = '';
+
+      guardarRegistrosEnAlmacenamientoLocal();
+      actualizarTabla();
+    });
+
+    depositoForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fecha = obtenerFechaActual();
+      const monto = parseFloat(depositoInput.value);
+      const concepto = conceptoDepositoInput.value;
+      const zona = zonaDepositoInput.value;
+
+      efectivo += monto;
+      efectivoValor.textContent = efectivo.toFixed(2);
+
+      const registro = {
+        tipo: 'Deposito',
+        fecha,
+        monto,
+        concepto,
+        zona
+      };
+
+      registros.push(registro);
+
+      depositoInput.value = '';
+      conceptoDepositoInput.value = '';
+      zonaDepositoInput.value = '';
+
+      guardarRegistrosEnAlmacenamientoLocal();
+      actualizarTabla();
+    });
+
+    gastoZonaButton.addEventListener('click', function() {
+      calcularGastoPorZona();
+    });
+
+    gastoTotalButton.addEventListener('click', function() {
+      calcularGastoTotal();
+    });
+
+    function obtenerFechaActual() {
+      const fecha = new Date();
+      const year = fecha.getFullYear();
+      let month = fecha.getMonth() + 1;
+      if (month < 10) {
+        month = '0' + month;
+      }
+      let day = fecha.getDate();
+      if (day < 10) {
+        day = '0' + day;
+      }
+      return `${year}-${month}-${day}`;
+    }
+
+    function actualizarTabla() {
+      registroBody.innerHTML = '';
+
+      for (const registro of registros) {
+        const row = document.createElement('tr');
+
+        const tipoCell = document.createElement('td');
+        tipoCell.textContent = registro.tipo;
+        row.appendChild(tipoCell);
+
+        const fechaCell = document.createElement('td');
+        fechaCell.textContent = registro.fecha;
+        row.appendChild(fechaCell);
+
+        const montoCell = document.createElement('td');
+        montoCell.textContent = registro.monto.toFixed(2);
+        row.appendChild(montoCell);
+
+        const conceptoCell = document.createElement('td');
+        conceptoCell.textContent = registro.concepto;
+        row.appendChild(conceptoCell);
+
+        const zonaCell = document.createElement('td');
+        zonaCell.textContent = registro.zona;
+        row.appendChild(zonaCell);
+
+        const accionesCell = document.createElement('td');
+        const eliminarButton = document.createElement('button');
+        eliminarButton.textContent = 'Eliminar';
+        eliminarButton.classList.add('delete-button');
+        eliminarButton.addEventListener('click', function() {
+          if (confirm('¿Estás seguro de que quieres eliminar este registro?')) {
+            eliminarRegistro(registro);
+          }
+        });
+        accionesCell.appendChild(eliminarButton);
+        row.appendChild(accionesCell);
+
+        registroBody.appendChild(row);
+      }
+    }
+
+    function eliminarRegistro(registro) {
+      const index = registros.indexOf(registro);
+      if (index !== -1) {
+        if (registro.tipo === 'Gasto') {
+          efectivo += registro.monto;
+          efectivoValor.textContent = efectivo.toFixed(2);
+        }
+
+        registros.splice(index, 1);
+        guardarRegistrosEnAlmacenamientoLocal();
+        actualizarTabla();
+      }
+    }
+
+    function guardarRegistrosEnAlmacenamientoLocal() {
+      localStorage.setItem('registros', JSON.stringify(registros));
+    }
+
+    function cargarRegistrosAlmacenados() {
+      const registrosAlmacenados = localStorage.getItem('registros');
+      if (registrosAlmacenados) {
+        registros = JSON.parse(registrosAlmacenados);
+        efectivo = registros.reduce(function(total, registro) {
+          return registro.tipo === 'Gasto' ? total - registro.monto : total + registro.monto;
+        }, 0);
+      }
+      efectivoValor.textContent = efectivo.toFixed(2);
+      actualizarTabla();
+    }
+
+    function calcularGastoPorZona() {
+      const gastoPorZona = {
+        'Zona Metropolitana': 0,
+        'Centro Este': 0,
+        'Centro Oeste': 0
+      };
+
+      for (const registro of registros) {
+        if (registro.tipo === 'Gasto') {
+          gastoPorZona[registro.zona] += registro.monto;
+        }
+      }
+
+      let resultHTML = '';
+      for (const zona in gastoPorZona) {
+        const gasto = gastoPorZona[zona];
+        resultHTML += `<p>${zona}: $${gasto.toFixed(2)}</p>`;
+      }
+
+      gastoZonaResults.innerHTML = resultHTML;
+    }
+
+    function calcularGastoTotal() {
+      let gastoTotal = 0;
+
+      for (const registro of registros) {
+        if (registro.tipo === 'Gasto') {
+          gastoTotal += registro.monto;
+        }
+      }
+
+      gastoTotalResult.textContent = `Gasto Total: $${gastoTotal.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
